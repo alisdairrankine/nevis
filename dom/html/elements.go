@@ -38,6 +38,10 @@ var (
 	Tr    = dom.ElementCreator("tr")
 	Td    = dom.ElementCreator("td")
 	Th    = dom.ElementCreator("th")
+	Thead = dom.ElementCreator("thead")
+	Tbody = dom.ElementCreator("tbody")
 
+	Form   = dom.ElementCreator("form")
+	Input  = dom.ElementCreator("input")
 	Button = dom.ElementCreator("button")
 )
