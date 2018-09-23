@@ -5,6 +5,7 @@ import (
 
 	"github.com/alisdairrankine/nevis/dom"
 	"github.com/alisdairrankine/nevis/dom/html"
+	"github.com/alisdairrankine/nevis/renderer/string"
 )
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 
 	vdom := &dom.VirtualDom{}
 	vdom.SetRootNode(div)
-	j := dom.NewStringRenderer(true)
+	j := string.NewStringRenderer(true)
 
 	fmt.Println(j.RenderDom(vdom))
 }

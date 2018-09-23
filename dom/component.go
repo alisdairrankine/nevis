@@ -9,4 +9,5 @@ type Component interface {
 // PureComponent is embeddable and provides a non-updatable component
 type PureComponent struct{}
 
+// HasUpdated always returns false, as PureComponents never change
 func (c *PureComponent) HasUpdated() bool { return false }

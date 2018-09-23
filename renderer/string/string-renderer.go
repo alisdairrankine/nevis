@@ -1,6 +1,10 @@
-package dom
+package string
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/alisdairrankine/nevis/dom"
+)
 
 type StringRenderer struct {
 	includeElementAddresses bool
@@ -12,21 +16,21 @@ func NewStringRenderer(includeElementAddresses bool) *StringRenderer {
 	}
 }
 
-func (r *StringRenderer) renderNodeToString(n Node, address string) string {
+func (r *StringRenderer) renderNodeToString(n dom.Node, address string) string {
 	switch n.(type) {
 	case string:
 		return n.(string)
-	case *ElementNode:
-		return r.renderElement(n.(*ElementNode), address)
+	case *dom.ElementNode:
+		return r.renderElement(n.(*dom.ElementNode), address)
 	}
 	return ""
 }
 
-func (r *StringRenderer) RenderDom(d *VirtualDom) string {
+func (r *StringRenderer) RenderDom(d *dom.VirtualDom) string {
 	return r.renderNodeToString(d.RootNode, "0")
 }
 
-func (r *StringRenderer) renderElement(e *ElementNode, address string) string {
+func (r *StringRenderer) renderElement(e *dom.ElementNode, address string) string {
 	propString := ""
 	for propName, prop := range e.Properties {
 		propString += fmt.Sprintf(" %s=\"%s\"", propName, prop)

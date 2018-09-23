@@ -34,7 +34,7 @@ func Prop(Key, Value string) *property {
 	}
 }
 
-//Ignore components from element creation. Only care about text and basic elements
+// ElementCreator is a convenience function for creating new Element constructors.
 func ElementCreator(name string) func(children ...NodeOrProperty) *ElementNode {
 	return func(children ...NodeOrProperty) *ElementNode {
 		properties := make(map[string]string)

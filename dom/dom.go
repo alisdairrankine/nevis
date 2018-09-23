@@ -7,11 +7,13 @@ import (
 
 // WARNING: EXPERIMENTAL Virtual DOM
 
+// VirtualDom represents a DOM tree
 type VirtualDom struct {
 	RootNode  Node
 	listeners []func([]string)
 }
 
+// SetRootNode assigns a root node to the vDOM
 func (d *VirtualDom) SetRootNode(node Node) {
 	switch node.(type) {
 	case string:
@@ -25,13 +27,18 @@ func (d *VirtualDom) SetRootNode(node Node) {
 	}
 }
 
-func (d *VirtualDom) listenToUpdates(listener func([]string)) {
+// ListenToUpdates registers event listeners  to the vDOM. Whenever the DOM is updated,
+// the listener will be triggered.
+func (d *VirtualDom) ListenToUpdates(listener func([]string)) {
 	if d.listeners == nil {
 		d.listeners = make([]func([]string), 0)
 	}
 	d.listeners = append(d.listeners, listener)
 }
 
+// GetNodeByAddress returns a node for a string address.
+// Addresses are positions of branches seperated by dots, representing,
+// levels within the tree
 func (d *VirtualDom) GetNodeByAddress(address string) Node {
 	if address == "0" {
 		return d.RootNode
@@ -40,6 +47,19 @@ func (d *VirtualDom) GetNodeByAddress(address string) Node {
 	return GetDescendentByRelativeAddress(d.RootNode, strings.Join(addressParts[1:], "."))
 }
 
+// UpdateRootNode calculates a difference between the existingand new tree,
+// then alert all listeners to the new updates
+func (d *VirtualDom) UpdateRootNode(newNode Node) {
+	updates := diffNode(d.RootNode, newNode, "0")
+	d.RootNode = newNode
+	for _, listener := range d.listeners {
+		listener(updates)
+	}
+
+}
+
+// GetDescendentByRelativeAddress returns a descendent for a given node
+// at a given address.
 func GetDescendentByRelativeAddress(n Node, address string) Node {
 	switch n.(type) {
 	case string:
@@ -63,16 +83,6 @@ func GetDescendentByRelativeAddress(n Node, address string) Node {
 
 	}
 	return nil
-}
-
-func (d *VirtualDom) UpdateRootNode(newNode Node) {
-	//calculate diffs in tree, replace new tree.
-	updates := diffNode(d.RootNode, newNode, "0")
-	d.RootNode = newNode
-	for _, listener := range d.listeners {
-		listener(updates)
-	}
-
 }
 
 func mapIsSame(old, new map[string]string) bool {

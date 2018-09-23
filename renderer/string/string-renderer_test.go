@@ -1,10 +1,11 @@
-package dom_test
+package string_test
 
 import (
 	"testing"
 
 	"github.com/alisdairrankine/nevis/dom"
 	"github.com/alisdairrankine/nevis/dom/html"
+	"github.com/alisdairrankine/nevis/renderer/string"
 )
 
 func TestRenderTagToString(t *testing.T) {
@@ -16,7 +17,7 @@ func TestRenderTagToString(t *testing.T) {
 
 	vdom := &dom.VirtualDom{}
 	vdom.SetRootNode(div)
-	j := dom.NewStringRenderer(false)
+	j := string.NewStringRenderer(false)
 
 	str := j.RenderDom(vdom)
 	if "<a href=\"/\"><span>Click Here!</span></a>" != str {

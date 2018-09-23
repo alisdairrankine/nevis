@@ -5,11 +5,13 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alisdairrankine/nevis/dom"
+
 	jsdom "honnef.co/go/js/dom"
 )
 
 type JSDomRenderer struct {
-	vDom *VirtualDom
+	vDom *dom.VirtualDom
 }
 
 func (r *JSDomRenderer) RenderDom() {
@@ -20,11 +22,11 @@ func (r *JSDomRenderer) RenderDom() {
 	r.renderVirtualElement(parent[0], r.vDom.RootNode, "0", false)
 }
 
-func (r *JSDomRenderer) renderVirtualElement(parent jsdom.Node, node Node, address string, replace bool) {
-	var n Node
+func (r *JSDomRenderer) renderVirtualElement(parent jsdom.Node, node dom.Node, address string, replace bool) {
+	var n dom.Node
 	switch node.(type) {
-	case Component:
-		n = node.(Component).Render()
+	case dom.Component:
+		n = node.(dom.Component).Render()
 	default:
 		n = node
 	}
@@ -41,14 +43,14 @@ func (r *JSDomRenderer) renderVirtualElement(parent jsdom.Node, node Node, addre
 		} else {
 			parent.AppendChild(domel)
 		}
-	case Component:
-		componentChildren := n.(Component).Render()
+	case dom.Component:
+		componentChildren := n.(dom.Component).Render()
 		fmt.Println(componentChildren, address)
 		r.renderVirtualElement(parent, componentChildren, address, replace)
 
-	case *ElementNode:
+	case *dom.ElementNode:
 		fmt.Println("node!!")
-		el := n.(*ElementNode)
+		el := n.(*dom.ElementNode)
 		domel := jsdom.GetWindow().Document().CreateElement(el.Name)
 
 		for prop, value := range el.Properties {
@@ -57,7 +59,7 @@ func (r *JSDomRenderer) renderVirtualElement(parent jsdom.Node, node Node, addre
 		for event, handlers := range el.EventHandlers {
 			domel.AddEventListener(event, true, func(ev jsdom.Event) {
 				//create synthetic event
-				e := Event{}
+				e := dom.Event{}
 				for _, handler := range handlers {
 					handler(e)
 				}
@@ -108,9 +110,9 @@ func (r *JSDomRenderer) Rerender(addresses []string) {
 
 }
 
-func NewJSDomRenderer(vDom *VirtualDom) *JSDomRenderer {
+func NewJSDomRenderer(vDom *dom.VirtualDom) *JSDomRenderer {
 	r := &JSDomRenderer{vDom: vDom}
-	vDom.listenToUpdates(func(addresses []string) {
+	vDom.ListenToUpdates(func(addresses []string) {
 		r.Rerender(addresses)
 	})
 	return r
