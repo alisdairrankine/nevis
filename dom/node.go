@@ -27,6 +27,7 @@ type property struct {
 	Value string
 }
 
+// Prop creates a Property
 func Prop(Key, Value string) *property {
 	return &property{
 		Key:   Key,
